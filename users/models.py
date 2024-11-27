@@ -7,6 +7,9 @@ from .manager import CustomUserManager
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
+    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
+    first_name = models.CharField(_("first name"), max_length=50)
+    last_name = models.CharField(_("last name"), max_length=50)
     username = models.CharField(max_length=100, unique=True)
     is_staff = models.BooleanField(_('staff status'), default=False)
     is_superuser = models.BooleanField(_('superuser status'), default=False)
@@ -36,9 +39,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         super().save(*args, **kwargs)
 
 class StudentProfile(models.Model):
-    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
-    first_name = models.CharField(_("first name"), max_length=50)
-    last_name = models.CharField(_("last name"), max_length=50)
+    
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='student_profile')
     grade_level = models.CharField(max_length=20, blank=True, null=True)
 
@@ -49,10 +50,6 @@ class StudentProfile(models.Model):
         return f"{self.user.get_full_name()} (Student)"
 
 class TeacherProfile(models.Model):
-    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
- 
-    first_name = models.CharField(_("first name"), max_length=50)
-    last_name = models.CharField(_("last name"), max_length=50)
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='teacher_profile')
     specialization = models.CharField(max_length=100, blank=True, null=True)
     hourly_rate = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
